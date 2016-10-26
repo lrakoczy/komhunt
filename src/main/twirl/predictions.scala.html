@@ -1,0 +1,113 @@
+@(predictions: List[komhunt.prediction.Prediction])
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>KomHunt</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+		$(document).ready(function(){
+				//loop
+				$("[name='poll_bar'").each(
+						function(i){
+							//get wind value
+							var bar_width = (parseFloat($("[name='poll_val'").eq(i).text())).toString();
+							bar_width = bar_width + "%"; //add percentage sign.
+							//set bar button width as per wind value mention in span.
+							$("[name='poll_bar'").eq(i).width(bar_width);
+			  });
+
+		});
+	</script>
+
+</head>
+<body>
+<!-- Fixed navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">KomHunt</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Starred segments</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+@barClass(correlation: Double) = {
+    @if(correlation < 45) {
+        btn btn-sm btn-danger
+    } else {
+        @if(correlation < 90) {
+            btn btn-sm btn-warning
+        } else {
+            @if(correlation < 135) {
+                btn btn-sm btn-info
+            } else {
+                btn btn-sm btn-success
+            }
+        }
+    }
+}
+
+<div class="container theme-showcase" role="main">
+
+    @for(prediction <- predictions) {
+    <div class="panel panel-primary" style="margin:60px;">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                @prediction.segment.name
+            </h3>
+        </div>
+        <div class="panel-body"  style="margin:0px; width:115%;">
+            <div id="Main">
+                @for(point <- prediction.data) {
+                    <a name="poll_bar" class="@barClass(point.correlation)" style="text-align:left;margin:5px;">@{new java.util.Date(point.time * 1000L).format("dd MMM HH:mm")}</a>
+                    <span name="poll_val">@("%.2f".format(point.windSpeed * 1.609344d)) km/h</span><br/>
+                }
+            </div>
+
+        </div>
+    </div>
+    }
+</div>
+
+</body>
+</html>
