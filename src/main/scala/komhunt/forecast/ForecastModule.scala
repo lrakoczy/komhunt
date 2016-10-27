@@ -4,7 +4,6 @@ import akka.event.Logging
 import komhunt.model.Location
 import komhunt.{ActorModule, Configuration}
 import spray.client.pipelining._
-import spray.json.DefaultJsonProtocol
 
 import scala.concurrent.Future
 
@@ -13,9 +12,9 @@ trait ForecastModule {
 }
 
 trait ForecastModuleImpl extends ForecastModule {
-  this: ActorModule with Configuration =>
+  this: ActorModule =>
 
-  val darkskyAccessToken: String = config.getString("darksky.access_token")
+  val darkskyAccessToken: String = sys.env("DARKSKY_ACCESS_TOKEN")
   val forecastService = new ForecastServiceImpl
 
   class ForecastServiceImpl extends ForecastService {
@@ -23,9 +22,9 @@ trait ForecastModuleImpl extends ForecastModule {
     val log = Logging(system, getClass)
 
     override def hourlyForecast(location: Location): Future[Forecast] = {
-      import system.dispatcher
-      import spray.httpx.SprayJsonSupport._
       import ForecastJsonProtocol._
+      import spray.httpx.SprayJsonSupport._
+      import system.dispatcher
 
       implicit val asys = system
 

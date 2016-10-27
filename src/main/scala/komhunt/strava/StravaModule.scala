@@ -1,7 +1,7 @@
 package komhunt.strava
 
 import akka.event.Logging
-import komhunt.{ActorModule, Configuration}
+import komhunt.ActorModule
 import spray.client.pipelining._
 import spray.http._
 
@@ -12,16 +12,16 @@ trait StravaModule {
 }
 
 trait StravaModuleImpl extends StravaModule {
-  this: ActorModule with Configuration =>
+  this: ActorModule =>
 
   val stravaService = new StravaServiceImpl
 
   class StravaServiceImpl extends StravaService {
 
-    val stravaAccessToken: String = config.getString("strava.access_token")
-    val clientId: String = config.getString("strava.client_id")
-    val clientSecret: String = config.getString("strava.client_secret")
-    val redirectionUrl: String = config.getString("strava.redirection_url")
+    val stravaAccessToken: String = sys.env("STRAVA_ACCESS_TOKEN")
+    val clientId: String = sys.env("STRAVA_CLIENT_ID")
+    val clientSecret: String = sys.env("STRAVA_CLIENT_SECRET")
+    val redirectionUrl: String = sys.env("STRAVA_REDIRECTION_URL")
 
     import StravaJsonProtocol._
     import spray.httpx.SprayJsonSupport._
