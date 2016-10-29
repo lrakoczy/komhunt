@@ -35,7 +35,8 @@ abstract class SegmentService(modules: PredictionModule with StravaModule, actor
       parameters('code) { code =>
         respondWithMediaType(`text/html`) {
           onComplete(modules.predictionService.starredPrediction(code)) {
-            case Success(predictions) => complete(html.predictions.render(predictions).toString())
+            case Success(predictions) => complete("ok")
+//            case Success(predictions) => complete(html.predictions.render(predictions).toString())
             case Failure(ex) => complete(InternalServerError, s"An error occurred: ${ex.getMessage}")
           }
         }

@@ -18,7 +18,7 @@ object Boot extends App {
   implicit val timeout = Timeout(5.seconds)
 
   // create and start our service actor
-  val service = modules.system.actorOf(Props(classOf[SegmentServiceActor], modules), "demo-service")
+  val service = modules.system.actorOf(Props(classOf[SegmentServiceActor], modules), "komhunt-service")
 
   // start a new HTTP server on port 8080 with our service actor as the handler
   IO(Http) ? Http.Bind(service, interface = "0.0.0.0", port = 8080)
