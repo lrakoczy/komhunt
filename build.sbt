@@ -1,3 +1,5 @@
+import NativePackagerKeys._
+
 organization  := "lrakoczy"
 
 version       := "0.1"
@@ -6,12 +8,23 @@ scalaVersion  := "2.11.6"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
-lazy val root = (project in file(".")).enablePlugins(SbtTwirl, DockerPlugin)
+val akkaV = "2.3.9"
+val sprayV = "1.3.3"
 
-libraryDependencies ++= {
-  val akkaV = "2.3.9"
-  val sprayV = "1.3.3"
-  Seq(
+lazy val app = crossProject.settings(
+  unmanagedSourceDirectories in Compile +=
+    baseDirectory.value  / "shared" / "main" / "scala",
+  libraryDependencies ++= Seq(
+    "com.lihaoyi" %%% "scalatags" % "0.6.1",
+    "com.lihaoyi" %%% "upickle" % "0.4.3"
+  ),
+  scalaVersion := "2.11.5"
+).jsSettings(
+  libraryDependencies ++= Seq(
+    "org.scala-js" %%% "scalajs-dom" % "0.9.0"
+  )
+).jvmSettings(
+  libraryDependencies ++= Seq(
     "io.spray"            %%  "spray-can"     % sprayV,
     "io.spray"            %%  "spray-routing" % sprayV,
     "io.spray"            %%  "spray-json"    % "1.3.2",
@@ -21,7 +34,12 @@ libraryDependencies ++= {
     "com.typesafe.akka"   %%  "akka-testkit"  % akkaV   % "test",
     "org.specs2"          %%  "specs2-core"   % "2.3.11" % "test"
   )
-}
+)
+
+lazy val appJS = app.js
+lazy val appJVM = app.jvm.settings(
+  (resources in Compile) += (fastOptJS in (appJS, Compile)).value.data
+)
 
 Revolver.settings
 

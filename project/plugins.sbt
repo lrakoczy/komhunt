@@ -1,4 +1,7 @@
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
-addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.1.1")
+//addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.1.1")
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.4")
 addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.4.0")
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.13")
+addSbtPlugin("com.lihaoyi" % "workbench" % "0.2.3")
