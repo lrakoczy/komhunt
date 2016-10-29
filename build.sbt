@@ -1,12 +1,9 @@
-import NativePackagerKeys._
-
 organization  := "lrakoczy"
-
 version       := "0.1"
-
 scalaVersion  := "2.11.6"
-
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
+
+enablePlugins(sbtdocker.DockerPlugin)
 
 val akkaV = "2.3.9"
 val sprayV = "1.3.3"
@@ -36,12 +33,30 @@ lazy val app = crossProject.settings(
   )
 )
 
-lazy val appJS = app.js
-lazy val appJVM = app.jvm.settings(
-  (resources in Compile) += (fastOptJS in (appJS, Compile)).value.data
-)
+lazy val appJS = app.js.
+  settings(assemblyMergeStrategy in assembly := {
+    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+    case x => MergeStrategy.first
+  })
+lazy val appJVM = app.jvm.
+  settings(name := "komhunt").
+  settings(
+  (resources in Compile) += (fastOptJS in (appJS, Compile)).value.data).
+  settings(assemblyMergeStrategy in assembly := {
+    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+    case "application.conf" | "reference.conf" => MergeStrategy.concat
+    case x => MergeStrategy.first
+  })
 
 Revolver.settings
+
+assembly := {
+  (assembly in appJVM in Compile).value
+}
+
+assemblyOutputPath in assembly := {
+  (target in appJVM in assembly).value / (assemblyJarName in appJVM in assembly).value
+}
 
 dockerfile in docker := {
   // The assembly task generates a fat JAR file
@@ -55,4 +70,3 @@ dockerfile in docker := {
     entryPoint("java", "-jar", artifactTargetPath)
   }
 }
-
