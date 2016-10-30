@@ -13,12 +13,14 @@ lazy val app = crossProject.settings(
     baseDirectory.value  / "shared" / "main" / "scala",
   libraryDependencies ++= Seq(
     "com.lihaoyi" %%% "scalatags" % "0.6.1",
-    "com.lihaoyi" %%% "upickle" % "0.4.3"
+    "com.lihaoyi" %%% "upickle" % "0.4.3",
+    "com.lihaoyi" %%% "autowire" % "0.2.5"
   ),
   scalaVersion := "2.11.5"
 ).jsSettings(
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.9.0"
+    "org.scala-js" %%% "scalajs-dom" % "0.9.0",
+    "com.lihaoyi"  %%% "autowire"    % "0.2.5"
   )
 ).jvmSettings(
   libraryDependencies ++= Seq(
@@ -29,7 +31,9 @@ lazy val app = crossProject.settings(
     "io.spray"            %%  "spray-testkit" % sprayV  % "test",
     "com.typesafe.akka"   %%  "akka-actor"    % akkaV,
     "com.typesafe.akka"   %%  "akka-testkit"  % akkaV   % "test",
-    "org.specs2"          %%  "specs2-core"   % "2.3.11" % "test"
+    "org.specs2"          %%  "specs2-core"   % "2.3.11" % "test",
+    "com.lihaoyi"         %%  "autowire"      % "0.2.5",
+    "com.lihaoyi"         %%  "autowire"      % "0.2.5"
   )
 )
 

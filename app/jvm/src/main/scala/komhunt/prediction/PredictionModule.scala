@@ -2,8 +2,8 @@ package komhunt.prediction
 
 import komhunt.forecast.{Forecast, ForecastModule}
 import komhunt.model.Location
-import komhunt.strava.{Segment, StravaModule}
-import komhunt.{ActorModule, Configuration}
+import komhunt.strava.StravaModule
+import komhunt._
 
 import scala.concurrent.Future
 

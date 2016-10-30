@@ -1,10 +1,10 @@
 package komhunt.strava
 
+import komhunt.Segment
 import spray.json.DefaultJsonProtocol
 
 import scala.concurrent.Future
 
-case class Segment(id: Int, name: String, startLatitude: Double, endLatitude: Double, startLongitude: Double, endLongitude: Double)
 case class TokenResponse(code: String)
 
 object StravaJsonProtocol extends DefaultJsonProtocol {

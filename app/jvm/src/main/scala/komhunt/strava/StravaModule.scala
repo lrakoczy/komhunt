@@ -1,7 +1,7 @@
 package komhunt.strava
 
 import akka.event.Logging
-import komhunt.ActorModule
+import komhunt.{ActorModule, Segment}
 import spray.client.pipelining._
 import spray.http._
 
