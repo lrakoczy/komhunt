@@ -20,7 +20,7 @@ trait PredictionModuleImpl extends PredictionModule {
 
     import system.dispatcher
 
-    override def starredPrediction(code: String): Future[List[Prediction]] = {
+    def hourly(code: String): Future[List[Prediction]] = {
       for {
         userCode <- stravaService.token(code)
         list <- stravaService.starredSegments(userCode.code)

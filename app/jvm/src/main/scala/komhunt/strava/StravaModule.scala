@@ -31,7 +31,7 @@ trait StravaModuleImpl extends StravaModule {
     implicit val asys = system
 
     override def segment(id: SegmentId): Future[Segment] = {
-      log.debug(s"Requesting the segment with id=$id from Strava API...")
+      log.info(s"Requesting the segment with id=$id from Strava API...")
       val pipeline = sendReceive ~> unmarshal[Segment]
       pipeline {
         Get(s"https://www.strava.com/api/v3/segments/$id?access_token=$stravaAccessToken")
@@ -39,7 +39,7 @@ trait StravaModuleImpl extends StravaModule {
     }
 
     override def token(code: String): Future[TokenResponse] = {
-      log.debug(s"Requesting security token...")
+      log.info(s"Requesting security token...")
       val formData = Map("client_id" -> s"$clientId", "client_secret" -> s"$clientSecret", "code" -> code)
       val pipeline = sendReceive ~> unmarshal[TokenResponse]
       pipeline {
@@ -48,7 +48,7 @@ trait StravaModuleImpl extends StravaModule {
     }
 
     override def starredSegments(code: String): Future[List[Segment]] = {
-      log.debug(s"Requesting starred segments...")
+      log.info(s"Requesting starred segments...")
       val pipeline = addCredentials(OAuth2BearerToken(code)) ~> sendReceive ~> unmarshal[List[Segment]]
       pipeline {
         Get("https://www.strava.com/api/v3/segments/starred")

@@ -28,7 +28,7 @@ trait ForecastModuleImpl extends ForecastModule {
 
       implicit val asys = system
 
-      log.debug("Requesting forecast from DarSky API...")
+      log.info("Requesting forecast from DarSky API...")
       val pipeline = sendReceive ~> unmarshal[Forecast]
 
       pipeline {
