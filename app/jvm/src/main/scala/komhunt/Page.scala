@@ -10,6 +10,8 @@ class Page(code: String) {
     html(
       head(
         script(src:="/app-fastopt.js"),
+        script(src:="https://code.jquery.com/jquery-3.1.1.min.js"),
+        script(src:="http://code.highcharts.com/highcharts.js"),
         link(
           rel:="stylesheet",
           href:="https://cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css"

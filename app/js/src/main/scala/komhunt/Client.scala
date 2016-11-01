@@ -1,13 +1,16 @@
 package komhunt
-import scala.concurrent.Future
-import scalatags.JsDom.all._
-import org.scalajs.dom
-import dom.html
-
-import scalajs.concurrent.JSExecutionContext.Implicits.queue
 import autowire._
+import com.highcharts.CleanJsObject
+import com.highcharts.HighchartsUtils._
+import org.scalajs.dom
+import org.scalajs.dom.html
+import org.scalajs.jquery._
 
+import scala.concurrent.Future
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
+import scalatags.JsDom.all._
 
 class Client {
 
@@ -29,25 +32,32 @@ object Ajaxer extends autowire.Client[String, upickle.default.Reader, upickle.de
 
 @JSExport
 object Client extends {
+  private def renderChart(chartConfig: CleanJsObject[js.Object]): dom.Element = {
+    dom.console.log(chartConfig)
+    val container = div().render
+    jQuery(container).highcharts(chartConfig)
+    container
+  }
+
   @JSExport
   def displaySegments(container: html.Div, code: String) = {
-    val outputBox = ul.render
-
     val predictionsFuture: Future[List[Prediction]] = Ajaxer[ClientApi].hourly(code).call()
+    val charts = div.render
 
     for {
       predList <- predictionsFuture
       prediction <- predList
-    } outputBox.appendChild(
-      li(
-        b(prediction.segment.name), " - ", prediction.data.toString(), " predictions"
-      ).render
+      outputBox = div.render
+      barChart = renderChart(new ChartConfiguration(prediction.segment.name, prediction.data.map(dp => dp.time.toString), prediction.data.map(dp => dp.windSpeed)))
+      x = outputBox.appendChild(barChart)
+    } charts.appendChild(
+      outputBox
     )
 
     container.appendChild(
       div(
         h1("Segments"),
-        outputBox
+        charts
       ).render
     )
   }
