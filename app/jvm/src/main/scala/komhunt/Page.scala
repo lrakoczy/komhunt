@@ -10,6 +10,7 @@ object Page {
     val appScript = if (inDev) "/app-fastopt.js" else "/app-opt.js"
     html(
       head(
+        scalatags.Text.tags2.title("KomHunt"),
         script(src := appScript),
         script(src := "https://code.jquery.com/jquery-3.1.1.min.js"),
         script(src := "http://code.highcharts.com/highcharts.js"),
