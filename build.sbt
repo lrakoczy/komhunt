@@ -51,7 +51,10 @@ lazy val appJVM = app.jvm.
     case PathList("META-INF", xs@_*) => MergeStrategy.discard
     case "application.conf" | "reference.conf" => MergeStrategy.concat
     case x => MergeStrategy.first
-  })
+  }).
+  settings(
+    assembly <<= assembly dependsOn (fullOptJS in (appJS, Compile))
+  )
 
 Revolver.settings
 
