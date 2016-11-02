@@ -27,9 +27,11 @@ object Router extends autowire.Server[String, upickle.default.Reader, upickle.de
   def write[Result: upickle.default.Writer](r: Result) = upickle.default.write(r)
 }
 
-abstract class SegmentService(modules: PredictionModule with StravaModule, actorSystem: ActorSystem) extends HttpService {
+abstract class SegmentService(modules: PredictionModule with StravaModule with Configuration, actorSystem: ActorSystem) extends HttpService {
 
   import actorSystem.dispatcher
+
+  val inDev = modules.config.getBoolean("inDev")
 
   val main =
     post {
@@ -52,7 +54,7 @@ abstract class SegmentService(modules: PredictionModule with StravaModule, actor
           complete {
             HttpEntity(
               MediaTypes.`text/html`,
-              new Page(code).skeleton.render
+              Page.skeleton(inDev, code).render
             )
           }
         } ~
