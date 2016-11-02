@@ -47,19 +47,25 @@ object Client extends {
   @JSExport
   def displaySegments(code: String) = {
     val predictionsFuture: Future[List[Prediction]] = Ajaxer[ClientApi].hourly(code).call()
-    val charts = div.render
+    val hourlyCharts = div.render
+    val dailyCharts = div.render
 
     for {
       predList <- predictionsFuture
       prediction <- predList
       outputBox = div.render
-      barChart = renderChart(new ChartConfiguration(prediction))
+      hourlyChart = renderChart(new ChartConfiguration(prediction.segment, prediction.hourlyData))
+      dailyChart = renderChart(new ChartConfiguration(prediction.segment, prediction.dailyData))
     } {
-      charts.appendChild(barChart)
+      hourlyCharts.appendChild(hourlyChart)
+      dailyCharts.appendChild(dailyChart)
       fixChartSizes()
     }
 
-    val tabs = new NavigationBar("highcharts-test", NavigationTab("Hourly", "hourly", "star", charts, active = true))
+    val tabs = new NavigationBar("highcharts-test",
+      NavigationTab("Hourly", "hourly", "time", hourlyCharts, active = true),
+      NavigationTab("Daily", "daily", "calendar", dailyCharts)
+    )
 
     val container = div(id := "main-container", `class` := "container")(
       div(`class` := "row", div(`class` := "col-md-12")(

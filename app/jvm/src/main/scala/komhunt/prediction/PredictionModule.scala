@@ -32,7 +32,7 @@ trait PredictionModuleImpl extends PredictionModule {
       Future.sequence(
         for {
           s <- segments
-          mapped = createPrediction(s, forecastService.hourlyForecast(Location(s.startLatitude, s.startLongitude) midPoint Location(s.endLatitude, s.endLongitude)))
+          mapped = createPrediction(s, forecastService.forecast(Location(s.startLatitude, s.startLongitude) midPoint Location(s.endLatitude, s.endLongitude)))
         } yield mapped
       )
     }
@@ -42,8 +42,9 @@ trait PredictionModuleImpl extends PredictionModule {
       for {
         forecast <- forecastF
         segmentBearing = Location(segment.startLatitude, segment.startLongitude) bearing Location(segment.endLatitude, segment.endLongitude)
-        points = forecast.hourly.data.map(dp => PredictionData(dp.time, distance(segmentBearing, dp.windBearing.getOrElse(0)), dp.windSpeed, 1d))
-      } yield Prediction(segment, points)
+        hourlyPoints = forecast.hourly.data.map(dp => PredictionData(dp.time, distance(segmentBearing, dp.windBearing.getOrElse(0)), dp.windSpeed, 1d))
+        dailyPoints = forecast.daily.data.map(dp => PredictionData(dp.time, distance(segmentBearing, dp.windBearing.getOrElse(0)), dp.windSpeed, 1d))
+      } yield Prediction(segment, hourlyPoints, dailyPoints)
     }
   }
 

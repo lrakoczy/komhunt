@@ -21,7 +21,7 @@ trait ForecastModuleImpl extends ForecastModule {
 
     val log = Logging(system, getClass)
 
-    override def hourlyForecast(location: Location): Future[Forecast] = {
+    override def forecast(location: Location): Future[Forecast] = {
       import ForecastJsonProtocol._
       import spray.httpx.SprayJsonSupport._
       import system.dispatcher
@@ -32,7 +32,7 @@ trait ForecastModuleImpl extends ForecastModule {
       val pipeline = sendReceive ~> unmarshal[Forecast]
 
       pipeline {
-        Get(s"https://api.darksky.net/forecast/$darkskyAccessToken/${location.latitude},${location.longitude}?exclude=currently,minutely,daily,flags")
+        Get(s"https://api.darksky.net/forecast/$darkskyAccessToken/${location.latitude},${location.longitude}?exclude=currently,minutely,flags")
       }
     }
   }
