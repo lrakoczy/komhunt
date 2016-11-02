@@ -47,6 +47,8 @@ lazy val appJVM = app.jvm.
   settings(name := "komhunt").
   settings(
     (resources in Compile) += (fastOptJS in(appJS, Compile)).value.data).
+  settings(
+    (resources in Compile) += (fullOptJS in(appJS, Compile)).value.data).
   settings(assemblyMergeStrategy in assembly := {
     case PathList("META-INF", xs@_*) => MergeStrategy.discard
     case "application.conf" | "reference.conf" => MergeStrategy.concat
