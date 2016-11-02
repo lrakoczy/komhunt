@@ -24,8 +24,16 @@ class ChartConfiguration(prediction: Prediction) extends HighchartsConfig {
     }): _*)
   }
 
+  override val yAxis: Cfg[YAxis] = new YAxis {
+    override val id:js.UndefOr[String] = "speed"
+    override val title: Cfg[YAxisTitle] = new YAxisTitle {
+      override val text: UndefOr[String] = "Wind speed (km/h)"
+    }
+  }
+
   override val series: SeriesCfg = js.Array[AnySeries](
     new SeriesColumn {
+      override val yAxis: js.UndefOr[Double | String] = "speed"
       override val showInLegend: js.UndefOr[Boolean] = false
       override val name: UndefOr[String] = "Wind speed"
       override val data: SeriesCfgData[SeriesColumnData] = js.Array[SeriesColumnData](prediction.data.map(dp =>
@@ -38,12 +46,8 @@ class ChartConfiguration(prediction: Prediction) extends HighchartsConfig {
             else if (correlation < 135) "blue"
             else "green"
           }
-          override val name: UndefOr[String] = {
-            val d = new Date(dp.time * 1000L)
-            s"<b>Date:</b> ${d.toLocaleDateString()} ${d.toLocaleTimeString()}"
-          }
           override val y: UndefOr[Double] = speed
-        }) : _*)
+        }): _*)
     }
   )
 }
