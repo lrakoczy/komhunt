@@ -3,7 +3,6 @@ import autowire._
 import com.highcharts.CleanJsObject
 import com.highcharts.HighchartsUtils._
 import org.scalajs.dom
-import org.scalajs.dom.html
 import org.scalajs.jquery._
 
 import scala.concurrent.Future
@@ -39,8 +38,14 @@ object Client extends {
     container
   }
 
+  private def fixChartSizes(): Unit = {
+    jQuery("div[data-highcharts-chart]").each { (_: Int, e: dom.Element) ⇒
+      jQuery(e).highcharts().foreach(_.reflow()).asInstanceOf[js.Any]
+    }
+  }
+
   @JSExport
-  def displaySegments(container: html.Div, code: String) = {
+  def displaySegments(code: String) = {
     val predictionsFuture: Future[List[Prediction]] = Ajaxer[ClientApi].hourly(code).call()
     val charts = div.render
 
@@ -49,16 +54,25 @@ object Client extends {
       prediction <- predList
       outputBox = div.render
       barChart = renderChart(new ChartConfiguration(prediction))
-      x = outputBox.appendChild(barChart)
-    } charts.appendChild(
-      outputBox
-    )
+    } {
+      charts.appendChild(barChart)
+      fixChartSizes()
+    }
 
-    container.appendChild(
-      div(
-        h1("Segments"),
-        charts
-      ).render
-    )
+    val tabs = new NavigationBar("highcharts-test", NavigationTab("Hourly", "hourly", "star", charts, active = true))
+
+    val container = div(id := "main-container", `class` := "container")(
+      div(`class` := "row", div(`class` := "col-md-12")(
+        tabs.content
+      ))
+    ).render
+
+    val body = dom.document.body
+    body.appendChild(tabs.navbar("KomHunt").render)
+    body.appendChild(container)
+
+    // Size fix
+    jQuery(dom.document).on("shown.bs.tab", "a[data-toggle=\"tab\"]", (_: JQueryEventObject) ⇒ fixChartSizes())
+    fixChartSizes()
   }
 }
