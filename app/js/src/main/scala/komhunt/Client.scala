@@ -48,7 +48,7 @@ object Client extends {
       predList <- predictionsFuture
       prediction <- predList
       outputBox = div.render
-      barChart = renderChart(new ChartConfiguration(prediction.segment.name, prediction.data.map(dp => dp.time.toString), prediction.data.map(dp => dp.windSpeed)))
+      barChart = renderChart(new ChartConfiguration(prediction))
       x = outputBox.appendChild(barChart)
     } charts.appendChild(
       outputBox
