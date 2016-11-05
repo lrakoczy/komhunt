@@ -49,7 +49,7 @@ class ChartConfiguration(segment: Segment, predictionData: List[PredictionData],
         override val max: UndefOr[Double] = 180
         override val id: js.UndefOr[String] = "correlation"
         override val title: Cfg[YAxisTitle] = new YAxisTitle {
-          override val text: UndefOr[String] = "Wind direction correlation"
+          override val text: UndefOr[String] = "Wind correlation"
         }
         override val labels: Cfg[YAxisLabels] = new YAxisLabels {
           override val enabled: UndefOr[Boolean] = true
@@ -83,10 +83,10 @@ class ChartConfiguration(segment: Segment, predictionData: List[PredictionData],
     },
     new SeriesSpline {
       override val yAxis: js.UndefOr[Double | String] = "correlation"
-      override val name: UndefOr[String] = "Direction correlation (deg)"
+      override val name: UndefOr[String] = "Wind correlation (°)"
       override val showInLegend: js.UndefOr[Boolean] = false
       override val tooltip: UndefOr[CleanJsObject[SeriesSplineTooltip]] = new SeriesSplineTooltip {
-        override val valueSuffix: UndefOr[String] = " deg"
+        override val valueSuffix: UndefOr[String] = " °"
         override val valueDecimals: UndefOr[Double] = 0
       }
       override val data: SeriesCfgData[SeriesSplineData] = js.Array[SeriesSplineData](predictionData.map(dp =>
