@@ -41,10 +41,13 @@ trait PredictionModuleImpl extends PredictionModule {
       import komhunt.Measures._
       for {
         forecast <- forecastF
-        segmentBearing = Location(segment.startLatitude, segment.startLongitude) bearing Location(segment.endLatitude, segment.endLongitude)
+        start = Location(segment.startLatitude, segment.startLongitude)
+        end = Location(segment.endLatitude, segment.endLongitude)
+        segmentBearing = start bearing end
+        windRelevance = (start distance end) / segment.distance
         hourlyPoints = forecast.hourly.data.map(dp => PredictionData(dp.time, distance(segmentBearing, dp.windBearing.getOrElse(0)), dp.windSpeed, 1d))
         dailyPoints = forecast.daily.data.map(dp => PredictionData(dp.time, distance(segmentBearing, dp.windBearing.getOrElse(0)), dp.windSpeed, 1d))
-      } yield Prediction(segment, hourlyPoints, dailyPoints)
+      } yield Prediction(segment, hourlyPoints, dailyPoints, windRelevance)
     }
   }
 

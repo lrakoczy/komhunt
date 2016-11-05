@@ -8,7 +8,7 @@ import scala.concurrent.Future
 case class TokenResponse(code: String)
 
 object StravaJsonProtocol extends DefaultJsonProtocol {
-  implicit val segmentFormat = jsonFormat(Segment, "id", "name", "start_latitude", "end_latitude", "start_longitude", "end_longitude")
+  implicit val segmentFormat = jsonFormat(Segment, "id", "name", "start_latitude", "end_latitude", "start_longitude", "end_longitude", "distance")
   implicit val tokenJsonFormat = jsonFormat(TokenResponse, "access_token")
 }
 

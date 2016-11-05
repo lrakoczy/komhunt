@@ -54,8 +54,8 @@ object Client extends {
       predList <- predictionsFuture
       prediction <- predList
       outputBox = div.render
-      hourlyChart = renderChart(new ChartConfiguration(prediction.segment, prediction.hourlyData))
-      dailyChart = renderChart(new ChartConfiguration(prediction.segment, prediction.dailyData))
+      hourlyChart = renderChart(new ChartConfiguration(prediction.segment, prediction.hourlyData, prediction.windRelevance))
+      dailyChart = renderChart(new ChartConfiguration(prediction.segment, prediction.dailyData, prediction.windRelevance))
     } {
       hourlyCharts.appendChild(hourlyChart)
       dailyCharts.appendChild(dailyChart)
