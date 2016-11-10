@@ -18,6 +18,9 @@ trait StravaModuleImpl extends StravaModule {
 
   class StravaServiceImpl extends StravaService {
 
+    val stravaUrl = "https://www.strava.com/"
+    val apiUrl = stravaUrl + "api/v3/"
+
     val stravaAccessToken: String = sys.env("STRAVA_ACCESS_TOKEN")
     val clientId: String = sys.env("STRAVA_CLIENT_ID")
     val clientSecret: String = sys.env("STRAVA_CLIENT_SECRET")
@@ -43,7 +46,7 @@ trait StravaModuleImpl extends StravaModule {
       val formData = Map("client_id" -> s"$clientId", "client_secret" -> s"$clientSecret", "code" -> code)
       val pipeline = sendReceive ~> unmarshal[TokenResponse]
       pipeline {
-        Post("https://www.strava.com/oauth/token", formData)
+        Post(s"${stravaUrl}oauth/token", formData)
       }
     }
 
@@ -51,7 +54,15 @@ trait StravaModuleImpl extends StravaModule {
       log.info(s"Requesting starred segments...")
       val pipeline = addCredentials(OAuth2BearerToken(code)) ~> sendReceive ~> unmarshal[List[Segment]]
       pipeline {
-        Get("https://www.strava.com/api/v3/segments/starred")
+        Get(s"${apiUrl}segments/starred")
+      }
+    }
+
+    override def athlete(code: String): Future[Athlete] = {
+      log.info(s"Requesting current athlete...")
+      val pipeline = addCredentials(OAuth2BearerToken(code)) ~> sendReceive ~> unmarshal[Athlete]
+      pipeline {
+        Get(s"${apiUrl}athlete")
       }
     }
   }

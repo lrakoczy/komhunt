@@ -33,8 +33,12 @@ lazy val app = crossProject.settings(
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
     "org.specs2" %% "specs2-core" % "2.3.11" % "test",
+    "org.scalatest" % "scalatest_2.11" % "3.0.0" % "test",
     "com.lihaoyi" %% "autowire" % "0.2.5",
-    "com.lihaoyi" %% "autowire" % "0.2.5"
+    "com.lihaoyi" %% "autowire" % "0.2.5",
+    "com.typesafe.slick" %% "slick" % "3.1.1",
+    "ch.qos.logback" % "logback-classic" % "1.1.7",
+    "com.h2database" % "h2" % "1.4.191"
   )
 )
 

@@ -8,5 +8,7 @@ case class Prediction(segment: Segment, hourlyData: List[PredictionData], dailyD
 case class PredictionData(time: Int, correlation: Double, windSpeed: Double, huntFactor: Double)
 
 trait ClientApi {
-  def hourly(code: String) : Future[List[Prediction]]
+  def hourly(code: String): Future[List[Prediction]]
+  def subscribeAlerts(code: String): Future[Option[Int]]
+  def unSubscribeAlerts(code: String): Future[Int]
 }
