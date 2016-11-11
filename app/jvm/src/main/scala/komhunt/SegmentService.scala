@@ -6,7 +6,7 @@ import komhunt.strava.StravaModule
 import spray.http.{HttpEntity, MediaTypes, StatusCodes}
 import spray.routing._
 
-class SegmentServiceActor(modules: PredictionModule with StravaModule with Configuration) extends Actor with HttpService {
+class SegmentServiceActor(mods: PredictionModule with StravaModule with Configuration) extends Actor with HttpService {
 
   import spray.routing.RejectionHandler.Default
 
@@ -14,7 +14,8 @@ class SegmentServiceActor(modules: PredictionModule with StravaModule with Confi
 
   override implicit def actorRefFactory: ActorRefFactory = context
 
-  def segments = new SegmentService(modules, system) {
+  def segments = new SegmentService {
+    override val modules = mods
     override implicit def actorRefFactory: ActorRefFactory = context
   }
 
@@ -27,13 +28,15 @@ object Router extends autowire.Server[String, upickle.default.Reader, upickle.de
   def write[Result: upickle.default.Writer](r: Result) = upickle.default.write(r)
 }
 
-abstract class SegmentService(modules: PredictionModule with StravaModule with Configuration, actorSystem: ActorSystem) extends HttpService {
+trait SegmentService extends HttpService {
 
+  val modules: PredictionModule with StravaModule with Configuration
+  val actorSystem = actorRefFactory
   import actorSystem.dispatcher
 
-  val inDev = modules.config.getBoolean("inDev")
+  lazy val inDev = modules.config.getBoolean("inDev")
 
-  val main =
+  lazy val main =
     post {
       path("ajax" / Segments){ s =>
         extract(_.request.entity.asString) { e =>
