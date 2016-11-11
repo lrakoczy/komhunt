@@ -1,14 +1,16 @@
 package komhunt
 
 import komhunt.prediction.{PredictionModule, PredictionService}
-import komhunt.strava.{StravaModule, StravaService}
+import komhunt.strava.{StravaModule, StravaService, TokenResponse}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{FlatSpec, Matchers}
-import spray.http.HttpHeaders.Location
+import spray.http.HttpHeaders.{Cookie, Location, `Set-Cookie`}
 import spray.http.StatusCodes._
-import spray.http.Uri
+import spray.http.{HttpCookie, Uri}
 import spray.testkit.ScalatestRouteTest
+
+import scala.concurrent.Future
 
 class SegmentServiceSpec extends FlatSpec with Matchers with ScalatestRouteTest with SegmentService with MockitoSugar {
   override def actorRefFactory = system
@@ -22,6 +24,7 @@ class SegmentServiceSpec extends FlatSpec with Matchers with ScalatestRouteTest 
 
     when(stravaService.clientId).thenReturn("123")
     when(stravaService.redirectionUrl).thenReturn("https://strava.com/")
+    when(stravaService.token("123")).thenReturn(Future.successful(TokenResponse("abc123")))
   }
 
   "SegmentService" should "redirect to strava when no code" in {
@@ -31,9 +34,16 @@ class SegmentServiceSpec extends FlatSpec with Matchers with ScalatestRouteTest 
     }
   }
 
-  "SegmentService" should "respond OK to get with code" in {
-    Get("/?code=123") ~> main ~> check {
+  "SegmentService" should "respond OK with code" in {
+    Get() ~> addHeader(Cookie(HttpCookie("strava_token", "abc123"))) ~> main ~> check {
       status should equal(OK)
+    }
+  }
+
+  "SegmentService" should "set access token cookie" in {
+    Get("/token?code=123") ~> main ~> check {
+      status should equal(PermanentRedirect)
+      header("Set-Cookie") should equal(Some(`Set-Cookie`(HttpCookie("strava_token", "abc123"))))
     }
   }
 }

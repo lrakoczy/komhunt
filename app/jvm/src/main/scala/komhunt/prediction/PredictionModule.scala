@@ -1,11 +1,11 @@
 package komhunt.prediction
 
+import komhunt._
+import komhunt.data.DataModel.Athlete
+import komhunt.data.DataModule
 import komhunt.forecast.{Forecast, ForecastModule}
 import komhunt.model.Location
 import komhunt.strava.StravaModule
-import komhunt._
-import komhunt.data.DataModel.Athlete
-import komhunt.data.{AthleteRepository, DataModule}
 
 import scala.concurrent.Future
 
@@ -24,8 +24,7 @@ trait PredictionModuleImpl extends PredictionModule {
 
     def hourly(code: String): Future[List[Prediction]] = {
       for {
-        userCode <- stravaService.token(code)
-        list <- stravaService.starredSegments(userCode.code)
+        list <- stravaService.starredSegments(code)
         predictions <- createPredictions(list)
       } yield predictions
     }
@@ -54,16 +53,14 @@ trait PredictionModuleImpl extends PredictionModule {
 
     override def subscribeAlerts(code: String): Future[Option[Int]] = {
       for {
-        userCode <- stravaService.token(code)
-        athlete <- stravaService.athlete(userCode.code)
-        res <- athleteRepository.saveAthlete(Athlete(athlete.id, athlete.firstname, athlete.lastname, userCode.code, true))
+        athlete <- stravaService.athlete(code)
+        res <- athleteRepository.saveAthlete(Athlete(athlete.id, athlete.firstname, athlete.lastname, code, true))
       } yield res
     }
 
     override def unSubscribeAlerts(code: String): Future[Int] = {
       for {
-        userCode <- stravaService.token(code)
-        athlete <- stravaService.athlete(userCode.code)
+        athlete <- stravaService.athlete(code)
         res <- athleteRepository.deleteAthlete(athlete.id)
       } yield res
     }

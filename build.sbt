@@ -21,7 +21,8 @@ lazy val app = crossProject.settings(
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "0.9.0",
     "com.lihaoyi" %%% "autowire" % "0.2.5",
-    "com.github.karasiq" %%% "scalajs-highcharts" % "1.1.2"
+    "com.github.karasiq" %%% "scalajs-highcharts" % "1.1.2",
+    "org.scala-js" %%% "scalajs-dom" % "0.9.0"
   )
 ).jvmSettings(
   libraryDependencies ++= Seq(

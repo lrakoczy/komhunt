@@ -42,7 +42,9 @@ final class NavigationBar(barId: String, tabs: NavigationTab*) {
         ),
         div(id := barId, `class` := "navbar-collapse collapse")(
           ul(`class` := "nav navbar-nav")(
-            tabs.map(renderTab)
+            tabs.map(renderTab),
+            li(input(id :="Subscribe", `type` := "button", value := "Subscribe", onclick := "komhunt.Client().subscribe();")),
+            li(input(id :="Unsubsccribe", `type` := "button", value := "Unsubscribe", onclick := "komhunt.Client().unSubscribe();"))
           )
         )
       )

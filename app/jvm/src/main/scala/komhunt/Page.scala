@@ -3,10 +3,10 @@ package komhunt
 import scalatags.Text.all._
 
 object Page {
-  def boot(code: String) =
-    s"""komhunt.Client().displaySegments("$code")"""
+  def boot() =
+    s"""komhunt.Client().displaySegments()"""
 
-  def skeleton(inDev: Boolean, code: String) = {
+  def skeleton(inDev: Boolean) = {
 
     val analyticsScript =
       if (!inDev)
@@ -38,7 +38,7 @@ object Page {
         )
       ),
       body(paddingTop := 70)(
-        onload := boot(code)
+        onload := boot()
       )
     )
   }
