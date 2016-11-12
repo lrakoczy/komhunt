@@ -54,7 +54,7 @@ trait PredictionModuleImpl extends PredictionModule {
     override def subscribeAlerts(code: String): Future[Option[Int]] = {
       for {
         athlete <- stravaService.athlete(code)
-        res <- athleteRepository.saveAthlete(Athlete(athlete.id, athlete.firstname, athlete.lastname, code, true))
+        res <- athleteRepository.saveAthlete(Athlete(athlete.id, athlete.firstname, athlete.lastname, code, alert = true))
       } yield res
     }
 
