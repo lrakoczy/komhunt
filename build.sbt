@@ -1,6 +1,6 @@
 organization := "lrakoczy"
 version := "0.1"
-scalaVersion := "2.11.6"
+scalaVersion := "2.12.0"
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
 enablePlugins(sbtdocker.DockerPlugin)
