@@ -1,6 +1,6 @@
 organization := "lrakoczy"
 version := "0.1"
-scalaVersion := "2.11.6"
+scalaVersion := "2.12.0"
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
 enablePlugins(sbtdocker.DockerPlugin)
@@ -21,7 +21,8 @@ lazy val app = crossProject.settings(
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "0.9.0",
     "com.lihaoyi" %%% "autowire" % "0.2.5",
-    "com.github.karasiq" %%% "scalajs-highcharts" % "1.1.2"
+    "com.github.karasiq" %%% "scalajs-highcharts" % "1.1.2",
+    "org.scala-js" %%% "scalajs-dom" % "0.9.0"
   )
 ).jvmSettings(
   libraryDependencies ++= Seq(
@@ -32,9 +33,13 @@ lazy val app = crossProject.settings(
     "io.spray" %% "spray-testkit" % sprayV % "test",
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
-    "org.specs2" %% "specs2-core" % "2.3.11" % "test",
+    "org.scalatest" % "scalatest_2.11" % "3.0.0" % "test",
+    "org.mockito" % "mockito-core" % "2.2.15" % "test",
     "com.lihaoyi" %% "autowire" % "0.2.5",
-    "com.lihaoyi" %% "autowire" % "0.2.5"
+    "com.lihaoyi" %% "autowire" % "0.2.5",
+    "com.typesafe.slick" %% "slick" % "3.1.1",
+    "ch.qos.logback" % "logback-classic" % "1.1.7",
+    "com.h2database" % "h2" % "1.4.191"
   )
 )
 

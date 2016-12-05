@@ -9,6 +9,7 @@ import scala.concurrent.Future
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
+import scala.util.{Failure, Success}
 import scalatags.JsDom.all._
 
 class Client {
@@ -44,8 +45,29 @@ object Client extends {
     }
   }
 
+  val cookiePattern = "strava_token=([0-9a-z]+)".r
+  val cookiePattern(code) = dom.document.cookie
+
   @JSExport
-  def displaySegments(code: String) = {
+  def subscribe() = {
+    val subscribeFuture = Ajaxer[ClientApi].subscribeAlerts(code).call()
+    subscribeFuture onComplete {
+      case Success(i) => println("Subscribed")
+      case Failure(ex) => println("Error while subscribing", ex)
+    }
+  }
+
+  @JSExport
+  def unSubscribe() = {
+    val subscribeFuture = Ajaxer[ClientApi].unSubscribeAlerts(code).call()
+    subscribeFuture onComplete {
+      case Success(i) => println("Un-subscribed")
+      case Failure(ex) => println("Error while un-subscribing", ex)
+    }
+  }
+
+  @JSExport
+  def displaySegments() = {
     val predictionsFuture: Future[List[Prediction]] = Ajaxer[ClientApi].hourly(code).call()
     val hourlyCharts = div.render
     val dailyCharts = div.render
